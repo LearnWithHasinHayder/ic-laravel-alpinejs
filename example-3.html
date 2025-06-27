@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alpine.js Interactive Demo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.3/cdn.min.js" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <div class="container mx-auto px-6 py-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-gray-800 mb-4">Alpine.js Interactive Demo</h1>
+            <p class="text-xl text-gray-600">Exploring Alpine.js with practical examples</p>
+        </div>
+
+        <!-- Basic Examples Section -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-blue-500 pb-2">🌟 Basic Examples</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Counter Example -->
+                <div class="bg-white rounded-lg shadow-lg p-6" x-data="counter">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-600">Counter</h3>
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-gray-800 mb-4" x-text="count"></div>
+                        <div class="space-x-2">
+                            <button @click="count--" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition">-</button>
+                            <button @click="count = 0" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded transition">Reset</button>
+                            <button @click="count++" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded transition">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Show/Hide Example -->
+                <div class="bg-white rounded-lg shadow-lg p-6" x-data="showHide">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-600">Show/Hide Toggle</h3>
+                    <button @click="visible = !visible" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition mb-4">
+                        <span x-text="visible ? 'Hide' : 'Show'"></span> Message
+                    </button>
+                    <div x-show="visible" x-transition class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+                        🎉 Hello! This message is now visible!
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Real-life Examples Section -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-green-500 pb-2">🏆 Real-life Examples</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Shopping Cart -->
+                <div class="bg-white rounded-lg shadow-lg p-6" x-data="shoppingCart">
+                    <h3 class="text-xl font-semibold mb-4 text-green-600">Shopping Cart</h3>
+                    
+                    <!-- Products -->
+                    <div class="mb-4">
+                        <h4 class="font-semibold mb-2">Products:</h4>
+                        <template x-for="product in products" :key="product.id">
+                            <div class="flex justify-between items-center py-2 border-b">
+                                <span x-text="product.name + ' - $' + product.price"></span>
+                                <button @click="addToCart(product)" class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Cart -->
+                    <div x-show="cart.length > 0" x-transition>
+                        <h4 class="font-semibold mb-2">Cart:</h4>
+                        <template x-for="item in cart" :key="item.id">
+                            <div class="flex justify-between items-center py-1 text-sm">
+                                <span x-text="item.name + ' x' + item.quantity"></span>
+                                <div>
+                                    <span x-text="'$' + (item.price * item.quantity)" class="mr-2"></span>
+                                    <button @click="removeFromCart(item.id)" class="text-red-500 hover:text-red-700">×</button>
+                                </div>
+                            </div>
+                        </template>
+                        <div class="font-bold text-lg mt-2 pt-2 border-t">
+                            Total: $<span x-text="total"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Gallery -->
+                <div class="bg-white rounded-lg shadow-lg p-6" x-data="imageGallery">
+                    <h3 class="text-xl font-semibold mb-4 text-green-600">Image Gallery</h3>
+                    
+                    <!-- Main Image -->
+                    <div class="mb-4">
+                        <img :src="images[currentImage]" alt="Gallery Image" class="w-full h-48 object-cover rounded">
+                    </div>
+                    
+                    <!-- Navigation -->
+                    <div class="flex justify-between items-center mb-4">
+                        <button @click="currentImage = currentImage > 0 ? currentImage - 1 : images.length - 1" 
+                                class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded">
+                            ← Prev
+                        </button>
+                        <span class="text-sm text-gray-600" x-text="(currentImage + 1) + ' / ' + images.length"></span>
+                        <button @click="currentImage = currentImage < images.length - 1 ? currentImage + 1 : 0" 
+                                class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded">
+                            Next →
+                        </button>
+                    </div>
+                    
+                    <!-- Thumbnails -->
+                    <div class="flex space-x-2">
+                        <template x-for="(image, index) in images" :key="index">
+                            <img :src="image" @click="currentImage = index" 
+                                 :class="currentImage === index ? 'ring-2 ring-blue-500' : ''"
+                                 class="w-16 h-12 object-cover rounded cursor-pointer hover:opacity-75 transition">
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Form Examples Section -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-purple-500 pb-2">📝 Form Examples</h2>
+            
+            <!-- Dynamic Form with Validation -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6" x-data="dynamicForm">
+                <h3 class="text-xl font-semibold mb-4 text-purple-600">Dynamic Form with Validation</h3>
+                
+                <form @submit.prevent="submitForm()" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                        <input type="text" x-model="user.name" @blur="validateForm()"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <div x-show="errors.name" x-text="errors.name" class="text-red-500 text-sm mt-1"></div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" x-model="user.email" @blur="validateForm()"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <div x-show="errors.email" x-text="errors.email" class="text-red-500 text-sm mt-1"></div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Age</label>
+                        <input type="number" x-model.number="user.age" @blur="validateForm()"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <div x-show="errors.age" x-text="errors.age" class="text-red-500 text-sm mt-1"></div>
+                    </div>
+                    
+                    <button type="submit" class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-md transition">
+                        Submit Form
+                    </button>
+                </form>
+            </div>
+
+            <!-- Form Input Repeaters -->
+            <div class="bg-white rounded-lg shadow-lg p-6" x-data="contactRepeater">
+                <h3 class="text-xl font-semibold mb-4 text-purple-600">Dynamic Contact Form (Repeaters)</h3>
+                
+                <template x-for="(contact, index) in contacts" :key="index">
+                    <div class="border border-gray-200 rounded-lg p-4 mb-4 bg-gray-50">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="font-medium text-gray-700" x-text="'Contact ' + (index + 1)"></h4>
+                            <button @click="removeContact(index)" x-show="contacts.length > 1"
+                                    class="text-red-500 hover:text-red-700 font-bold">×</button>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">Name</label>
+                                <input type="text" x-model="contact.name" placeholder="Full Name"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">Email</label>
+                                <input type="email" x-model="contact.email" placeholder="Email Address"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">Phone</label>
+                                <input type="tel" x-model="contact.phone" placeholder="Phone Number"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                
+                <div class="flex justify-between items-center">
+                    <button @click="addContact()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded transition">
+                        + Add Another Contact
+                    </button>
+                    <div class="text-sm text-gray-600">
+                        Total Contacts: <span x-text="contacts.length" class="font-semibold"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Advanced Examples Section -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-orange-500 pb-2">🚀 Advanced Examples</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Search Filter -->
+                <div class="bg-white rounded-lg shadow-lg p-6" x-data="searchFilter">
+                    <h3 class="text-xl font-semibold mb-4 text-orange-600">Search & Filter</h3>
+                    
+                    <div class="mb-4 space-y-3">
+                        <input type="text" x-model="search" placeholder="Search products..."
+                               class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        
+                        <select x-model="selectedCategory" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            <option value="all">All Categories</option>
+                            <option value="electronics">Electronics</option>
+                            <option value="fashion">Fashion</option>
+                            <option value="home">Home</option>
+                        </select>
+                    </div>
+                    
+                    <div class="space-y-2 max-h-64 overflow-y-auto">
+                        <template x-for="item in filteredItems" :key="item.name">
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
+                                <div>
+                                    <div x-text="item.name" class="font-medium"></div>
+                                    <div x-text="item.category" class="text-sm text-gray-500 capitalize"></div>
+                                </div>
+                                <div x-text="'$' + item.price" class="font-bold text-orange-600"></div>
+                            </div>
+                        </template>
+                        <div x-show="filteredItems.length === 0" class="text-center text-gray-500 py-4">
+                            No items found
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab System -->
+                <div class="bg-white rounded-lg shadow-lg p-6" x-data="tabSystem">
+                    <h3 class="text-xl font-semibold mb-4 text-orange-600">Tab System</h3>
+                    
+                    <!-- Tab Navigation -->
+                    <div class="flex border-b border-gray-200 mb-4">
+                        <button @click="activeTab = 'tab1'" 
+                                :class="activeTab === 'tab1' ? 'border-orange-500 text-orange-600' : 'border-transparent text-gray-500'"
+                                class="py-2 px-4 border-b-2 font-medium text-sm">
+                            Profile
+                        </button>
+                        <button @click="activeTab = 'tab2'" 
+                                :class="activeTab === 'tab2' ? 'border-orange-500 text-orange-600' : 'border-transparent text-gray-500'"
+                                class="py-2 px-4 border-b-2 font-medium text-sm">
+                            Settings
+                        </button>
+                        <button @click="activeTab = 'tab3'" 
+                                :class="activeTab === 'tab3' ? 'border-orange-500 text-orange-600' : 'border-transparent text-gray-500'"
+                                class="py-2 px-4 border-b-2 font-medium text-sm">
+                            Activity
+                        </button>
+                    </div>
+                    
+                    <!-- Tab Content -->
+                    <div>
+                        <div x-show="activeTab === 'tab1'" x-transition>
+                            <h4 class="font-semibold mb-2">Profile Information</h4>
+                            <p class="text-gray-600">This is the profile tab content. Here you can manage your personal information and preferences.</p>
+                            <div class="mt-3 p-3 bg-blue-50 rounded">
+                                <strong>John Doe</strong><br>
+                                john.doe@example.com<br>
+                                Member since 2023
+                            </div>
+                        </div>
+                        
+                        <div x-show="activeTab === 'tab2'" x-transition>
+                            <h4 class="font-semibold mb-2">Settings</h4>
+                            <p class="text-gray-600">Configure your application settings and preferences.</p>
+                            <div class="mt-3 space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2">
+                                    <span>Email notifications</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2">
+                                    <span>Push notifications</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div x-show="activeTab === 'tab3'" x-transition>
+                            <h4 class="font-semibold mb-2">Recent Activity</h4>
+                            <p class="text-gray-600">View your recent activity and interactions.</p>
+                            <div class="mt-3 space-y-2">
+                                <div class="p-2 bg-gray-50 rounded text-sm">
+                                    <strong>Today:</strong> Updated profile information
+                                </div>
+                                <div class="p-2 bg-gray-50 rounded text-sm">
+                                    <strong>Yesterday:</strong> Logged in from new device
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-600 mt-12">
+            <p>Built with Alpine.js & Tailwind CSS | Perfect for live coding demonstrations!</p>
+        </footer>
+    </div>
+
+    <script>
+        const counter = () => ({
+            count: 0
+        });
+        const showHide = () => ({
+            visible: false
+        });
+        const shoppingCart = () => ({
+            cart: [],
+            products: [
+                { id: 1, name: 'Laptop', price: 999 },
+                { id: 2, name: 'Mouse', price: 25 },
+                { id: 3, name: 'Keyboard', price: 75 }
+            ],
+            addToCart(product) {
+                const existing = this.cart.find(item => item.id === product.id);
+                if (existing) {
+                    existing.quantity++;
+                } else {
+                    this.cart.push({ ...product, quantity: 1 });
+                }
+            },
+            removeFromCart(productId) {
+                this.cart = this.cart.filter(item => item.id !== productId);
+            },
+            get total() {
+                return this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            }
+        });
+        const imageGallery = () => ({
+            currentImage: 0,
+            images: [
+                'https://picsum.photos/300/200?random=1',
+                'https://picsum.photos/300/200?random=2',
+                'https://picsum.photos/300/200?random=3',
+                'https://picsum.photos/300/200?random=4'
+            ]
+        });
+        const dynamicForm = () => ({
+            user: {
+                name: '',
+                email: '',
+                age: ''
+            },
+            errors: {},
+            validateForm() {
+                this.errors = {};
+                if (!this.user.name) this.errors.name = 'Name is required';
+                if (!this.user.email) this.errors.email = 'Email is required';
+                else if (!this.user.email.includes('@')) this.errors.email = 'Invalid email format';
+                if (!this.user.age) this.errors.age = 'Age is required';
+                else if (this.user.age < 18) this.errors.age = 'Must be 18 or older';
+                return Object.keys(this.errors).length === 0;
+            },
+            submitForm() {
+                if (this.validateForm()) {
+                    alert('Form submitted successfully!');
+                }
+            }
+        });
+        const contactRepeater = () => ({
+            contacts: [
+                { name: '', email: '', phone: '' }
+            ],
+            addContact() {
+                this.contacts.push({ name: '', email: '', phone: '' });
+            },
+            removeContact(index) {
+                if (this.contacts.length > 1) {
+                    this.contacts.splice(index, 1);
+                }
+            }
+        });
+        const searchFilter = () => ({
+            search: '',
+            items: [
+                { name: 'Apple iPhone', category: 'electronics', price: 999 },
+                { name: 'Samsung Galaxy', category: 'electronics', price: 899 },
+                { name: 'Nike Shoes', category: 'fashion', price: 120 },
+                { name: 'Adidas Jacket', category: 'fashion', price: 80 },
+                { name: 'Coffee Maker', category: 'home', price: 150 },
+                { name: 'Blender', category: 'home', price: 75 }
+            ],
+            selectedCategory: 'all',
+            get filteredItems() {
+                return this.items.filter(item => {
+                    const matchesSearch = item.name.toLowerCase().includes(this.search.toLowerCase());
+                    const matchesCategory = this.selectedCategory === 'all' || item.category === this.selectedCategory;
+                    return matchesSearch && matchesCategory;
+                });
+            }
+        });
+        const tabSystem = () => ({
+            activeTab: 'tab1'
+        });
+    </script>
+</body>
+</html>

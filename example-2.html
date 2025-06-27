@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alpine.js Student Examples</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="//cdn.tailwindcss.com"></script>
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+      body { background: #f7f7f7; }
+      .mono-section {
+        background: #f3f4f6;
+        border-color: #e5e7eb;
+      }
+      .mono-header {
+        color: #22223b;
+      }
+      .mono-btn {
+        background: #e5e7eb;
+        color: #22223b;
+      }
+      .mono-btn:hover {
+        background: #d1d5db;
+      }
+      .mono-input {
+        background: #fff;
+        border-color: #d1d5db;
+      }
+      .mono-card {
+        background: #fff;
+        border-color: #e5e7eb;
+      }
+      .mono-accent {
+        color: #4b5563;
+      }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-2xl mx-auto p-6 mono-card rounded-xl shadow-lg space-y-8 border">
+        <h1 class="text-3xl font-bold text-center mono-header mb-6">Alpine.js Student Examples</h1>
+
+        <!-- Example 1: Toggle Student Details -->
+        <div x-data="studentToggle" class="p-4 border rounded-lg mono-section">
+            <div class="flex items-center justify-between">
+                <span class="font-semibold text-lg">Student: John Doe</span>
+                <button @click="show = !show" class="px-3 py-1 mono-btn rounded transition">Toggle Details</button>
+            </div>
+            <div x-show="show" class="mt-3 text-gray-700" x-transition>
+                <p><strong>Age:</strong> 20</p>
+                <p><strong>Major:</strong> Computer Science</p>
+            </div>
+        </div>
+
+        <!-- Example 2: Student List with Add -->
+        <div x-data="studentList" class="p-4 border rounded-lg mono-section">
+            <h2 class="font-semibold text-lg mb-2 mono-accent">Student List</h2>
+            <ul class="mb-3 space-y-1">
+                <template x-for="student in students" :key="student">
+                    <li class="px-2 py-1 mono-card rounded border"> <span x-text="student"></span> </li>
+                </template>
+            </ul>
+            <div class="flex gap-2">
+                <input x-model="newStudent" type="text" placeholder="Add student name" class="flex-1 px-2 py-1 mono-input border rounded focus:outline-none focus:ring-2 focus:ring-gray-300">
+                <button @click="addStudent" class="px-3 py-1 mono-btn rounded transition">Add</button>
+            </div>
+        </div>
+
+        <!-- Example 3: Student Counter -->
+        <div x-data="studentCounter" class="p-4 border rounded-lg mono-section">
+            <h2 class="font-semibold text-lg mb-2 mono-accent">Student Counter</h2>
+            <div class="flex items-center gap-4">
+                <button @click="count--" class="px-3 py-1 mono-btn rounded transition">-</button>
+                <span class="text-xl font-bold" x-text="count"></span>
+                <button @click="count++" class="px-3 py-1 mono-btn rounded transition">+</button>
+            </div>
+        </div>
+
+        <!-- Example 4: Student Search Filter -->
+        <div x-data="studentSearch" class="p-4 border rounded-lg mono-section">
+            <h2 class="font-semibold text-lg mb-2 mono-accent">Search Students</h2>
+            <input x-model="query" type="text" placeholder="Type to search..." class="w-full px-2 py-1 mono-input border rounded focus:outline-none focus:ring-2 focus:ring-gray-300 mb-3">
+            <ul class="space-y-1">
+                <template x-for="student in filtered" :key="student">
+                    <li class="px-2 py-1 mono-card rounded border"> <span x-text="student"></span> </li>
+                </template>
+                <li x-show="filtered.length === 0" class="text-gray-400">No students found.</li>
+            </ul>
+        </div>
+
+        <!-- Example 5: Student Grade Toggle -->
+        <div x-data="studentGrades" class="p-4 border rounded-lg mono-section">
+            <h2 class="font-semibold text-lg mb-2 mono-accent">Student Grades</h2>
+            <ul class="space-y-2">
+                <template x-for="student in students" :key="student.name">
+                    <li class="flex items-center justify-between px-2 py-1 mono-card rounded border">
+                        <span x-text="student.name"></span>
+                        <button @click="student.show = !student.show" class="px-2 py-0.5 mono-btn rounded transition text-sm">Toggle Grade</button>
+                        <span x-show="student.show" class="ml-3 text-gray-700 font-semibold" x-transition x-text="student.grade"></span>
+                    </li>
+                </template>
+            </ul>
+        </div>
+
+        <!-- Example 6: Form Text Repeater -->
+        <div x-data="textRepeater" class="p-4 border rounded-lg mono-section">
+            <h2 class="font-semibold text-lg mb-2 mono-accent">Text Field Repeater</h2>
+            <form @submit.prevent class="space-y-2">
+                <template x-for="(field, idx) in fields" :key="idx">
+                    <div class="flex gap-2 items-center">
+                        <input x-model="fields[idx]" type="text" :placeholder="'Text ' + (idx + 1)" class="flex-1 px-2 py-1 mono-input border rounded focus:outline-none focus:ring-2 focus:ring-gray-300">
+                        <button type="button" @click="removeField(idx)" class="mono-btn px-2 py-1 rounded transition text-sm" x-show="fields.length > 1">Remove</button>
+                    </div>
+                </template>
+                <button type="button" @click="addField" class="mono-btn px-3 py-1 rounded transition">Add Field</button>
+            </form>
+            <div class="mt-4">
+                <h3 class="font-semibold text-md mb-1 mono-accent">Values:</h3>
+                <ul class="list-disc list-inside text-gray-600">
+                    <template x-for="(field, idx) in fields" :key="'val-' + idx">
+                        <li x-text="field"></li>
+                    </template>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Example 7: Public API Call (Random Dog Image) -->
+        <div x-data="randomDog" class="p-4 border rounded-lg mono-section">
+            <h2 class="font-semibold text-lg mb-2 mono-accent">Random Dog Image (API Call)</h2>
+            <div class="flex flex-col items-center gap-4">
+                <button @click="fetchDog" class="mono-btn px-3 py-1 rounded transition" :disabled="loading">
+                    <span x-show="!loading">Get Random Dog</span>
+                    <span x-show="loading">Loading...</span>
+                </button>
+                <template x-if="error">
+                    <div class="text-red-500 text-sm" x-text="error"></div>
+                </template>
+                <template x-if="image">
+                    <img :src="image" alt="Random Dog" class="max-w-xs rounded shadow border" loading="lazy">
+                </template>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alpine.js x-data components as separate script consts -->
+    <script>
+        const studentToggle = () => ({
+            show: false
+        });
+
+        const studentList = () => ({
+            students: ['Alice', 'Bob', 'Charlie'],
+            newStudent: '',
+            addStudent() {
+                if (this.newStudent.trim() !== '') {
+                    this.students.push(this.newStudent.trim());
+                    this.newStudent = '';
+                }
+            }
+        });
+
+        const studentCounter = () => ({
+            count: 3
+        });
+
+        const studentSearch = () => ({
+            query: '',
+            students: ['Alice', 'Bob', 'Charlie', 'David', 'Eva', 'Frank'],
+            get filtered() {
+                if (!this.query) return this.students;
+                return this.students.filter(s => s.toLowerCase().includes(this.query.toLowerCase()));
+            }
+        });
+
+        const studentGrades = () => ({
+            students: [
+                { name: 'Alice', grade: 'A', show: false },
+                { name: 'Bob', grade: 'B+', show: false },
+                { name: 'Charlie', grade: 'A-', show: false },
+                { name: 'David', grade: 'B', show: false }
+            ]
+        });
+
+        const textRepeater = () => ({
+            fields: [''],
+            addField() {
+                this.fields.push('');
+            },
+            removeField(idx) {
+                if (this.fields.length > 1) this.fields.splice(idx, 1);
+            }
+        });
+
+        const randomDog = () => ({
+            image: '',
+            loading: false,
+            error: '',
+            async fetchDog() {
+                this.loading = true;
+                this.error = '';
+                this.image = '';
+                try {
+                    const res = await fetch('https://dog.ceo/api/breeds/image/random');
+                    if (!res.ok) throw new Error('API error');
+                    const data = await res.json();
+                    if (data.status !== 'success') throw new Error('No image found');
+                    this.image = data.message;
+                } catch (e) {
+                    this.error = 'Failed to load image.';
+                } finally {
+                    this.loading = false;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
